@@ -98,10 +98,10 @@ Resources:
             #!/bin/bash -xe
             cd /home/ubuntu
             echo pwd
-            su ubuntu -c "git clone https://github.com/github-ragil/aws-kubernetes.git"
-            cd aws-kubernetes/
-            su ubuntu -c "chmod +x install_components.sh"
-            su ubuntu -c "bash install_components.sh"
+            su ubuntu -c "git clone https://github.com/github-ragil/go-trivia.git"
+            cd go-trivia/
+            su ubuntu -c "chmod +x worker1.sh"
+            su ubuntu -c "bash worker1.sh"
       SecurityGroupIds:
         - !Ref WorkerNodeKubernetesSG
       Tags: 
@@ -127,11 +127,10 @@ Resources:
             #!/bin/bash -xe
             cd /home/ubuntu
             echo pwd
-            su ubuntu -c "git clone https://github.com/github-ragil/aws-kubernetes.git"
-            cd aws-kubernetes/
-            su ubuntu -c "chmod +x install_components.sh kube_init.sh"
-            su ubuntu -c "bash install_components.sh"
-            su ubuntu -c "bash kube_init.sh"
+            su ubuntu -c "git clone https://github.com/github-ragil/go-trivia.git"
+            cd go-trivia/
+            su ubuntu -c "chmod +x master.sh"
+            su ubuntu -c "bash master.sh"
       SecurityGroupIds:
         - !Ref MasterNodeKubernetesSG
       Tags: 
