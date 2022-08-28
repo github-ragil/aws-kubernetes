@@ -1,0 +1,160 @@
+AWSTemplateFormatVersion: "2022-08-28"
+Description: Deploy Kuberentes Cluster with 1 Master Node
+
+Parameters:
+  InstanceType:
+    Description: Enter t3.small, t3.medium, or t3.large. Default is t3.medium.
+    Type: String
+    Default: t3.small
+    AllowedValues:
+      - t3.small
+      - t3.medium
+      - t3.large
+  ImageAMIId:
+    Description: Enter a valid ami image ID
+    Type: String
+    Default: ami-04ff9e9b51c1f62ca
+  VolumeSizeEC2:
+    Description: Enter the desired Volume Size
+    Type: Number
+    Default: 20
+
+Resources:
+  MasterNodeKubernetesSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+      GroupDescription: SecurityGroup for Kubernetes Cluster - Master Node
+      GroupName: KuberentesSGMasterNode
+      SecurityGroupIngress: 
+        - CidrIp: 0.0.0.0/0
+          Description: "SSH to EC2 Instances"
+          FromPort: 22
+          IpProtocol: tcp
+          ToPort: 22
+        - CidrIp: 0.0.0.0/0
+          Description: "Kubernetes API server"
+          FromPort: 6443
+          IpProtocol: tcp
+          ToPort: 6443
+        - CidrIp: 0.0.0.0/0
+          Description: "etcd server client API"
+          FromPort: 2379
+          IpProtocol: tcp
+          ToPort: 2380
+        - CidrIp: 0.0.0.0/0
+          Description: "kubelet API"
+          FromPort: 10250
+          IpProtocol: tcp
+          ToPort: 10250
+        - CidrIp: 0.0.0.0/0
+          Description: "kube-scheduler"
+          FromPort: 10251
+          IpProtocol: tcp
+          ToPort: 10251
+        - CidrIp: 0.0.0.0/0
+          Description: "kube-controller-manager"
+          FromPort: 10252
+          IpProtocol: tcp
+          ToPort: 10252
+      Tags: 
+        - Key: Name
+          Value: Kuberentes SG Master Node
+
+  WorkerNodeKubernetesSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+      GroupDescription: SecurityGroup for Kubernetes Cluster - Worker Node
+      GroupName: KuberentesSGWorkerNode
+      SecurityGroupIngress: 
+        - CidrIp: 0.0.0.0/0
+          Description: "SSH to EC2 Instances"
+          FromPort: 22
+          IpProtocol: tcp
+          ToPort: 22
+        - CidrIp: 0.0.0.0/0
+          Description: "kubelet API"
+          FromPort: 10250
+          IpProtocol: tcp
+          ToPort: 10250
+        - CidrIp: 0.0.0.0/0
+          Description: "NodePort Services"
+          FromPort: 30000
+          IpProtocol: tcp
+          ToPort: 32767
+      Tags: 
+        - Key: Name
+          Value: Kuberentes SG Worker Node
+
+  WorkerNode:
+    DependsOn: WorkerNodeKubernetesSG
+    Type: AWS::EC2::Instance
+    Properties: 
+      ImageId: !Ref ImageAMIId
+      InstanceInitiatedShutdownBehavior: terminate
+      InstanceType: !Ref InstanceType
+      KeyName: pc-ssh
+      UserData:
+        Fn::Base64: !Sub |
+            #!/bin/bash -xe
+            cd /home/ubuntu
+            echo pwd
+            su ubuntu -c "git clone https://github.com/Naz513/kubernetes-ubuntu.git"
+            cd kubernetes-ubuntu/
+            su ubuntu -c "chmod +x install_components.sh"
+            su ubuntu -c "bash install_components.sh"
+      SecurityGroupIds:
+        - !Ref WorkerNodeKubernetesSG
+      Tags: 
+        - Key: Name
+          Value: WrokerNode
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeSize: !Ref VolumeSizeEC2
+            VolumeType: gp2
+            DeleteOnTermination: true
+
+  MasterNode:
+    DependsOn: MasterNodeKubernetesSG
+    Type: AWS::EC2::Instance
+    Properties: 
+      ImageId: !Ref ImageAMIId
+      InstanceInitiatedShutdownBehavior: terminate
+      InstanceType: !Ref InstanceType
+      KeyName: pc-ssh
+      UserData:
+        Fn::Base64: !Sub |
+            #!/bin/bash -xe
+            cd /home/ubuntu
+            echo pwd
+            su ubuntu -c "git clone https://github.com/Naz513/kubernetes-ubuntu.git"
+            cd kubernetes-ubuntu/
+            su ubuntu -c "chmod +x install_components.sh  kube_init.sh  kubernetes_dashboard.sh"
+            su ubuntu -c "bash install_components.sh"
+            su ubuntu -c "bash kube_init.sh"  
+            su ubuntu -c "kubernetes_dashboard.sh"
+      SecurityGroupIds:
+        - !Ref MasterNodeKubernetesSG
+      Tags: 
+        - Key: Name
+          Value: MasterNode
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeSize: !Ref VolumeSizeEC2
+            VolumeType: gp2
+            DeleteOnTermination: true
+
+Outputs:
+  MasterNodeIP:
+    Description: IP of Master Node
+    Value: !GetAtt MasterNode.PublicIp
+  MasterNodeConnectSSH:
+    Description: SSH into Master Node
+    Value: !Sub ssh -i "pc-ssh.pem" ubuntu@${MasterNode.PublicDnsName}
+  WorkerNodeIP:
+    Description: IP of Worker Node
+    Value: !GetAtt WorkerNode.PublicIp
+  WorkerNodeConnectSSH:
+    Description: SSH into Worker Node
+    Value: !Sub ssh -i "pc-ssh.pem" ubuntu@${WorkerNode.PublicDnsName}
