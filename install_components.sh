@@ -17,7 +17,7 @@ echo "##########################################################################
 echo "# 2/12 Set up the repository                                                      #"
 echo "###################################################################################"
 sudo apt-get update
-sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
+sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release make
 echo " "
 
 echo "###################################################################################"

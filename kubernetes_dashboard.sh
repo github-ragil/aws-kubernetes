@@ -30,7 +30,8 @@ kubectl describe secret $(kubectl get secret | awk '/^cluster-admin-dashboard-sa
 echo " "
 
 echo "###################################################################################"
-echo "# 5/5 Get the port                                                                #"
+echo "# 5/5 Get the port & join command                                                 #"
 echo "###################################################################################"
 kubectl get svc -n kubernetes-dashboard
+kubeadm token create --print-join-command -> /home/ubuntu/token.txt
 echo " "
