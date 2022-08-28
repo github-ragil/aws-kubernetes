@@ -40,7 +40,7 @@ Resources:
           Description: "etcd server client API"
           FromPort: 2379
           IpProtocol: tcp
-          ToPort: 2380
+          ToPort: 4380
         - CidrIp: 0.0.0.0/0
           Description: "kubelet API"
           FromPort: 10250
@@ -106,7 +106,7 @@ Resources:
         - !Ref WorkerNodeKubernetesSG
       Tags: 
         - Key: Name
-          Value: WrokerNode
+          Value: WorkerNode
       BlockDeviceMappings:
         - DeviceName: /dev/sda1
           Ebs:
