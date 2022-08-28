@@ -92,7 +92,7 @@ Resources:
       ImageId: !Ref ImageAMIId
       InstanceInitiatedShutdownBehavior: terminate
       InstanceType: !Ref InstanceType
-      KeyName: pc-ssh
+      KeyName: triviapp_key
       UserData:
         Fn::Base64: !Sub |
             #!/bin/bash -xe
@@ -121,7 +121,7 @@ Resources:
       ImageId: !Ref ImageAMIId
       InstanceInitiatedShutdownBehavior: terminate
       InstanceType: !Ref InstanceType
-      KeyName: pc-ssh
+      KeyName: triviapp_key
       UserData:
         Fn::Base64: !Sub |
             #!/bin/bash -xe
@@ -151,10 +151,10 @@ Outputs:
     Value: !GetAtt MasterNode.PublicIp
   MasterNodeConnectSSH:
     Description: SSH into Master Node
-    Value: !Sub ssh -i "pc-ssh.pem" ubuntu@${MasterNode.PublicDnsName}
+    Value: !Sub ssh -i "triviapp_key.pem" ubuntu@${MasterNode.PublicDnsName}
   WorkerNodeIP:
     Description: IP of Worker Node
     Value: !GetAtt WorkerNode.PublicIp
   WorkerNodeConnectSSH:
     Description: SSH into Worker Node
-    Value: !Sub ssh -i "pc-ssh.pem" ubuntu@${WorkerNode.PublicDnsName}
+    Value: !Sub ssh -i "triviapp_key.pem" ubuntu@${WorkerNode.PublicDnsName}
