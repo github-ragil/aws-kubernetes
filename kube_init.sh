@@ -13,9 +13,10 @@ sudo bash get_helm.sh
 echo " "
 
 echo "###################################################################################"
-echo "# 2/5 Kubeadm Init                                                                #"
+echo "# 2/5 Kubeadm Init & Git Clone TriviaApp                                          #"
 echo "###################################################################################"
 sudo kubeadm init --ignore-preflight-errors=all
+sudo git clone https://github.com/github-ragil/go-trivia.git
 echo " "
 
 echo "###################################################################################"
@@ -33,7 +34,7 @@ kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl versio
 echo " "
 
 echo "###################################################################################"
-echo "# 5/5 Get Nodes                                                                   #"
+echo "# 5/5 Get Nodes & Make Install go-trivia                                       #"
 echo "###################################################################################"
 kubectl get nodes
 echo " "

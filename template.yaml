@@ -129,10 +129,8 @@ Resources:
             echo pwd
             su ubuntu -c "git clone https://github.com/github-ragil/aws-kubernetes.git"
             cd aws-kubernetes/
-            su ubuntu -c "chmod +x install_components.sh  kube_init.sh  kubernetes_dashboard.sh"
+            su ubuntu -c "chmod +x install_components.sh"
             su ubuntu -c "bash install_components.sh"
-            su ubuntu -c "bash kube_init.sh"  
-            su ubuntu -c "bash kubernetes_dashboard.sh"
       SecurityGroupIds:
         - !Ref MasterNodeKubernetesSG
       Tags: 
