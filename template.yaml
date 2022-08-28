@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2022-08-28"
-Description: Deploy Kuberentes Cluster with 1 Master Node
+Description: Deploy Kuberentes Cluster with 1 Master Node and 1 Worker Node
 
 Parameters:
   InstanceType:
