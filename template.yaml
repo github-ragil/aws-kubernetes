@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: "2022-08-28"
+AWSTemplateFormatVersion: "2010-09-09"
 Description: Deploy Kuberentes Cluster with 1 Master Node and 1 Worker Node
 
 Parameters:
