@@ -98,8 +98,8 @@ Resources:
             #!/bin/bash -xe
             cd /home/ubuntu
             echo pwd
-            su ubuntu -c "git clone https://github.com/Naz513/kubernetes-ubuntu.git"
-            cd kubernetes-ubuntu/
+            su ubuntu -c "git clone https://github.com/github-ragil/aws-kubernetes.git"
+            cd aws-kubernetes/
             su ubuntu -c "chmod +x install_components.sh"
             su ubuntu -c "bash install_components.sh"
       SecurityGroupIds:
@@ -127,12 +127,12 @@ Resources:
             #!/bin/bash -xe
             cd /home/ubuntu
             echo pwd
-            su ubuntu -c "git clone https://github.com/Naz513/kubernetes-ubuntu.git"
-            cd kubernetes-ubuntu/
+            su ubuntu -c "git clone https://github.com/github-ragil/aws-kubernetes.git"
+            cd aws-kubernetes/
             su ubuntu -c "chmod +x install_components.sh  kube_init.sh  kubernetes_dashboard.sh"
             su ubuntu -c "bash install_components.sh"
             su ubuntu -c "bash kube_init.sh"  
-            su ubuntu -c "kubernetes_dashboard.sh"
+            su ubuntu -c "bash kubernetes_dashboard.sh"
       SecurityGroupIds:
         - !Ref MasterNodeKubernetesSG
       Tags: 

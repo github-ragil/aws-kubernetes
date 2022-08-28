@@ -5,9 +5,12 @@ echo "##########################################################################
 echo " "
 
 echo "###################################################################################"
-echo "# 1/12 Uninstall old versions                                                     #"
+echo "# 1/12 Uninstall old versions, Disable Unattended Upgrade, & Swapoff              #"
 echo "###################################################################################"
 sudo apt-get remove docker docker-engine docker.io containerd runc
+sudo swapoff -a
+sudo sed -i.bak '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+sudo apt remove unattended-upgrades
 echo " "
 
 echo "###################################################################################"
