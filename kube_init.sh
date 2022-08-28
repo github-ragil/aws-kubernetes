@@ -22,7 +22,7 @@ echo " "
 echo "###################################################################################"
 echo "# 3/5 Startup Cluster Configurations                                              #"
 echo "###################################################################################"
-sudo mkdir -p $HOME/.kube
+mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 echo " "
@@ -36,5 +36,6 @@ echo " "
 echo "###################################################################################"
 echo "# 5/5 Get Nodes & Make Install go-trivia                                       #"
 echo "###################################################################################"
-kubectl get nodes
+kubectl get pods  --all-namespaces
+kubeadm token create --print-join-command -> /home/ubuntu/token.txt
 echo " "

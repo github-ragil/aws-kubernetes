@@ -5,16 +5,16 @@ echo "##########################################################################
 echo " "
 
 echo "###################################################################################"
-echo "# 1/2 Uninstall old versions, Disable Unattended Upgrade, & Swapoff              #"
+echo "# Uninstall old versions, Disable Unattended Upgrade, & Swapoff              #"
 echo "###################################################################################"
 sudo apt-get remove docker docker-engine docker.io containerd runc
 sudo swapoff -a
 sudo sed -i.bak '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
-sudo apt remove unattended-upgrades
+sudo apt remove unattended-upgrades -y
 echo " "
 
 echo "###################################################################################"
-echo "# 2/2 Install Helm, Make, Curl, Wget & Git                                                    #"
+echo "# Install Helm, Make, Curl, Wget & Git                                                    #"
 echo "###################################################################################"
 sudo apt-get update
 sudo apt-get install -y make git curl wget
@@ -23,3 +23,29 @@ sudo chmod 700 get_helm.sh
 sudo bash get_helm.sh
 
 echo " "
+
+sudo apt-get update -y  && sudo apt-get install apt-transport-https -y
+sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+
+cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
+deb https://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+
+sudo apt-get update
+
+sudo modprobe br_netfilter
+sudo sysctl net.bridge.bridge-nf-call-iptables=1
+sudo sysctl -p
+sudo apt-get install docker.io -y
+
+sudo usermod -aG docker ubuntu
+sudo systemctl restart docker
+sudo systemctl enable docker.service
+
+
+sudo apt-get install -y kubelet kubeadm kubectl kubernetes-cni
+
+sudo systemctl daemon-reload
+sudo systemctl start kubelet
+sudo systemctl enable kubelet.service
+sudo systemctl status docker
